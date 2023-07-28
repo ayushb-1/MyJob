@@ -10,6 +10,7 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 10;
   const [jobCategoryFilter, setJobCategoryFilter] = useState('');
+  const [jobTypeFilter, setJobTypeFilter] = useState('');
 
   useEffect(() => {
    
@@ -21,7 +22,7 @@ const Home = () => {
         params: {
           page: currentPage,
           limit: jobsPerPage,
-          
+          type:jobTypeFilter
         },
       });
       const responseData = response.data;
@@ -36,23 +37,27 @@ const Home = () => {
           (item) => item.category  && item.category.name.toLowerCase().includes(lowerCaseJobCategoryFilter)
         );
         setJobs(newResponse);
+        
       }
 
     };
 
     fetchData();
-  }, [currentPage,jobCategoryFilter]);
+  }, [currentPage,jobTypeFilter,jobCategoryFilter]);
   console.log(jobs);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+  const handleJobTypeChange=(e)=>{
+    setJobTypeFilter(e.target.value);
+  }
   const handleJobCategoryChange=(e)=>{
     setJobCategoryFilter(e.target.value);
   }
   const handleReset=()=>{
-   
     setJobCategoryFilter('');
+    setJobTypeFilter('');
     setCurrentPage(1);
   }
 
@@ -60,7 +65,7 @@ return(
   <>
     <section className="w-full flex gap-10">
 
-      <Filter handleReset={handleReset} handleJobCategoryChange={handleJobCategoryChange}/>
+      <Filter handleReset={handleReset} handleJobTypeChange={handleJobTypeChange} jobTypeFilter={jobTypeFilter} handleJobCategoryChange={handleJobCategoryChange} jobCategoryFilter={jobCategoryFilter}/>
       <div className="relative flex gap-y-10 min-h-screen flex-col w-full items-center justify-center overflow-hidden bg-gray-50 p-6 sm:py-12 ">
         {jobs.map((job)=>(
           <div key={job.jobId}>
